@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isPlatformAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'platform_admin' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'platform_admin'
+      );
+    }
+
+    function isSocietyAdmin(societyId) {
+      return isAuthenticated() && (
+        request.auth.uid in get(/databases/$(database)/documents/societies/$(societyId)).data.adminUserIds ||
+        isPlatformAdmin()
+      );
+    }
+
+    // 1. Colleges: Publicly readable; editable only by platform administrators
+    match /colleges/{collegeId} {
+      allow read: if true;
+      allow write: if isPlatformAdmin();
+    }
+
+    // 2. Societies: Publicly readable; editable only by authorised society admins or platform admins
+    match /societies/{societyId} {
+      allow read: if resource.data.publicationStatus == 'published' || isSocietyAdmin(societyId) || isPlatformAdmin();
+      allow create: if isAuthenticated();
+      allow update: if isSocietyAdmin(societyId);
+      allow delete: if isPlatformAdmin();
+    }
+
+    // 3. Events: Publicly readable; editable only by authorised society reps
+    match /events/{eventId} {
+      allow read: if resource.data.publicationStatus == 'published' || isPlatformAdmin();
+      allow create: if isAuthenticated() && isSocietyAdmin(request.resource.data.societyId);
+      allow update: if isSocietyAdmin(resource.data.societyId);
+      allow delete: if isSocietyAdmin(resource.data.societyId) || isPlatformAdmin();
+    }
+
+    // 4. User Profiles: Private to owner; platform admin can read
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isPlatformAdmin();
+      // Prevent user from elevating their own role
+      allow create: if isOwner(userId) && request.resource.data.role == 'student';
+      allow update: if isOwner(userId) && request.resource.data.role == resource.data.role;
+      allow delete: if isOwner(userId) || isPlatformAdmin();
+    }
+
+    // 5. Registrations: Private to the student and the event society admins
+    match /registrations/{regId} {
+      allow read: if isOwner(resource.data.userId) || isPlatformAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isOwner(resource.data.userId) || isPlatformAdmin();
+      allow delete: if isOwner(resource.data.userId) || isPlatformAdmin();
+    }
+
+    // 6. Membership Applications: Private to applicant and society coordinators
+    match /membershipApplications/{appId} {
+      allow read: if isOwner(resource.data.userId) || isSocietyAdmin(resource.data.societyId);
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSocietyAdmin(resource.data.societyId) || isPlatformAdmin();
+      allow delete: if isOwner(resource.data.userId) || isPlatformAdmin();
+    }
+
+    // 7. Community Reports: Anyone can submit; only platform admins can read/resolve
+    match /reports/{reportId} {
+      allow create: if true;
+      allow read, update, delete: if isPlatformAdmin();
+    }
+  }
+}

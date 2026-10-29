@@ -1,0 +1,6 @@
+{
+  "name": "IPU Pulse — Campus Discovery Platform",
+  "description": "Every College. Every Society. Every Opportunity. Discover campus societies, events, outsider eligibility, registrations, and membership opportunities across IPU colleges.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

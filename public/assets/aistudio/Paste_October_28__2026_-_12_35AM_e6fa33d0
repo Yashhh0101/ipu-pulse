@@ -1,0 +1,1336 @@
+# MASTER PROMPT: BUILD IPU PULSE — THE CAMPUS DISCOVERY PLATFORM FOR IPU COLLEGES
+
+Act as a senior full-stack developer, UI/UX designer, product architect, Firebase engineer, and QA tester. Build a complete, responsive, production-minded web application called **IPU Pulse**.
+
+Do not just create a landing page or a static UI mockup. Build a functional application with working navigation, college selection, society listings, event discovery, eligibility information, registration flows, membership applications, authentication, and role-based dashboards.
+
+If your environment supports creating and running files, implement the project directly, run it, test it, and fix errors. Do not stop after writing a plan.
+
+---
+
+# 1. PROJECT OVERVIEW
+
+Product name: IPU Pulse
+
+Tagline: Every College. Every Society. Every Opportunity.
+
+Platform type: College society discovery, campus event discovery, event registration, and society membership platform.
+
+Target audience:
+- Students studying in colleges affiliated with Guru Gobind Singh Indraprastha University (GGSIPU/IPU).
+- Students interested in fests, hackathons, workshops, orientations, competitions, and society recruitment.
+- Society members and authorised society representatives.
+- Society presidents and core team members.
+- Platform administrators and moderators.
+
+Core problem:
+
+Students often do not know which societies are organising events, when events are happening, whether outsiders can participate, whether registration is open, or how to join a society.
+
+Information is scattered across Instagram pages, WhatsApp groups, posters, college websites, and Google Forms.
+
+IPU Pulse must bring this information into one clean, searchable, centralised platform.
+
+Core product promise:
+
+A student selects their college, discovers its societies, explores active and upcoming events, checks eligibility, registers for events, and finds official society membership information — all from one platform.
+
+IMPORTANT:
+- Build a working MVP, not a fake product presentation.
+- Keep the interface simple, modern, professional, and intuitive.
+- Never invent real upcoming events, phone numbers, official society links, or verified contact information.
+- Use clearly labelled demonstration data until genuine information is supplied or verified.
+- Do not claim affiliation or official endorsement from IPU or any college unless authorised.
+
+---
+
+# 2. REQUIRED TECHNOLOGY STACK
+
+Use the following stack unless the environment requires a compatible alternative.
+
+Frontend:
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Lucide React icons
+
+Backend and data:
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Storage for event posters and permitted media
+- Firebase Security Rules
+- Firebase App Check where appropriate for production
+
+Forms and validation:
+- React Hook Form
+- Zod
+
+Optional integrations:
+- Gemini API for event recommendations and natural-language discovery.
+- Official Google Forms links for societies that prefer external registration.
+- Email notifications through a properly configured provider if supported.
+
+Deployment:
+- Vercel or Netlify for the frontend.
+- Firebase for authentication, database, and storage.
+
+Use reusable components, typed data models, environment variables, loading states, error handling, and accessible HTML.
+
+Do not put API keys, service-account credentials, or privileged secrets in client-side code.
+
+If Firebase credentials are unavailable, create a working demo mode with local mock data and clearly explain how to connect Firebase later.
+
+---
+
+# 3. VISUAL DESIGN SYSTEM
+
+The UI must be simple, beautiful, modern, and easy to understand.
+
+Design inspiration:
+- Modern university platforms.
+- Clean SaaS dashboards.
+- Minimal editorial layouts.
+- Contemporary student community products.
+
+Avoid:
+- Excessive gradients.
+- Too many colours.
+- Glassmorphism everywhere.
+- Unnecessary animations.
+- Huge decorative illustrations.
+- Crowded layouts.
+- Excessive rounded cards.
+- Fake statistics and fake testimonials.
+- Emoji-heavy navigation.
+- Overcomplicated dashboards.
+
+Colour palette:
+- Primary: Deep indigo, approximately #4F46E5.
+- Main background: #F8FAFC.
+- Card background: #FFFFFF.
+- Primary text: #0F172A.
+- Secondary text: #64748B.
+- Borders: #E2E8F0.
+- Success: #15803D.
+- Warning: #B45309.
+- Error: #B91C1C.
+
+Use colour consistently and sparingly.
+
+Typography:
+- Inter or a comparable modern sans-serif font.
+- Clear hierarchy between page titles, section headings, descriptions, and metadata.
+- Comfortable line height.
+- Readable text sizes.
+
+Layout:
+- White or very light background.
+- Clean navigation bar.
+- Consistent spacing.
+- Subtle borders and restrained shadows.
+- Medium-sized card radii.
+- Responsive grid layouts.
+- Plenty of whitespace.
+- High-quality empty states and loading skeletons.
+
+Buttons:
+- Clear primary and secondary variants.
+- Consistent heights and padding.
+- Visible hover, focus, disabled, and loading states.
+
+Responsive requirements:
+- Mobile-first design.
+- Support desktop, laptop, tablet, and mobile.
+- No horizontal overflow.
+- On mobile, convert desktop grids to one or two columns as appropriate.
+- Use a compact mobile navigation menu.
+- Make forms and registration buttons comfortable to use on small screens.
+
+Accessibility:
+- Semantic HTML.
+- Keyboard navigation.
+- Visible focus indicators.
+- Accessible modal dialogs.
+- Proper labels for inputs.
+- Sufficient colour contrast.
+- Useful alternative text for images.
+
+---
+
+# 4. COLLEGE DATA AND SELECTION
+
+The platform initially supports these 10 colleges supplied for the project:
+
+1. Maharaja Agrasen Institute of Technology (MAIT) — Rohini.
+2. Maharaja Surajmal Institute of Technology (MSIT) — Janakpuri.
+3. Bhagwan Parshuram Institute of Technology (BPIT) — Rohini.
+4. Bharati Vidyapeeth's College of Engineering (BVCOE) — Paschim Vihar.
+5. Guru Tegh Bahadur Institute of Technology (GTBIT) — Rajouri Garden.
+6. Dr. Akhilesh Das Gupta Institute of Technology & Management (ADGITM) — use the current official name and location after verification.
+7. Delhi Institute of Tool Engineering (DITE) — Okhla and Wazirpur.
+8. Ambedkar Institute of Advanced Communication Technologies & Research — Geeta Colony.
+9. Guru Nanak Institute of Technology (GNIT) — New Delhi.
+10. Guru Tegh Bahadur 4th Centenary Engineering College (GTB4CEC) — New Delhi.
+
+Store college data in a centralised configuration or Firestore collection.
+
+Each college must have:
+- Unique college ID.
+- Official display name.
+- Common abbreviation.
+- Location.
+- Optional official website.
+- Active/inactive status.
+- Society count derived from actual data.
+- Optional college logo or approved image.
+
+Do not assume that the supplied names, locations, or university affiliations are currently correct. Make them easy to update and verify them before production launch.
+
+## College selection modal
+
+When a new visitor opens the homepage:
+- Display the homepage first.
+- Show an attractive college-selection modal shortly after the page loads.
+- Do not block the page permanently.
+- Provide a close or skip option.
+- The user must be able to reopen college selection from the navigation bar.
+
+Modal content:
+
+Heading: "Which college are you from?"
+
+Description: "Choose your college to discover societies and events around you."
+
+Include:
+- Search input.
+- Search by full name or abbreviation.
+- List of supported colleges.
+- College selection cards or list items.
+- Clear selected state.
+- Continue button.
+
+Search must work in real time.
+
+After selection:
+- Save the selected college ID in local storage for returning visitors.
+- If logged in, optionally sync it with the user's profile.
+- Navigate to the selected college dashboard.
+- Show the selected college name in the navbar.
+- Allow the student to switch colleges at any time.
+
+Do not treat the college selection as proof of student identity.
+
+---
+
+# 5. HOMEPAGE
+
+Create a polished homepage with the following sections.
+
+## A. Navigation bar
+
+Left:
+- IPU Pulse logo and wordmark.
+
+Middle or desktop navigation:
+- Home.
+- Explore Events.
+- Societies.
+- Become a Member.
+- About.
+
+Right:
+- Select College.
+- Login or Sign Up.
+- Profile menu when authenticated.
+
+Keep the navbar compact, sticky if appropriate, and responsive.
+
+## B. Hero section
+
+Main headline:
+
+"Your campus has a life beyond classes."
+
+Supporting text:
+
+"Discover fests, hackathons, orientations, workshops, and the societies shaping your college experience."
+
+Primary CTA:
+"Explore Events"
+
+Secondary CTA:
+"Find Societies"
+
+College selection control:
+"Choose your IPU college"
+
+The college selector must open the college-selection modal.
+
+Use a restrained visual treatment. Do not make the hero unnecessarily tall.
+
+## C. Quick discovery categories
+
+Display clean category cards or filter chips:
+- Technical.
+- Coding and AI.
+- Cultural.
+- Dance and Music.
+- Literary.
+- Entrepreneurship.
+- Sports.
+- Social Impact.
+- Legal and Debate.
+- Other.
+
+Categories must be data-driven.
+
+## D. Upcoming events
+
+Display a curated list of genuinely published upcoming events.
+
+Each event card must include:
+- Event poster or safe placeholder.
+- Event title.
+- Organising society.
+- College.
+- Event date.
+- Venue or online status.
+- Category.
+- Registration status.
+- Eligibility label.
+- View Details button.
+
+If no verified upcoming events exist, show a useful empty state:
+
+"No upcoming events have been published yet."
+
+Provide a button to browse societies or change colleges.
+
+Do not generate fake live event information.
+
+## E. Featured societies
+
+Show selected society cards based on actual published data.
+
+Each card includes:
+- Society logo or placeholder.
+- Society name.
+- College.
+- Category.
+- Short description.
+- View Society button.
+
+## F. How it works
+
+Use three concise steps:
+1. Select your college.
+2. Discover societies and events.
+3. Check eligibility and register.
+
+## G. Become a member section
+
+Headline:
+
+"Find your people. Build your future."
+
+Explain that students can explore societies, learn about recruitment, and apply to become members.
+
+CTA:
+"Explore Membership Opportunities"
+
+## H. Footer
+
+Include:
+- About IPU Pulse.
+- Explore Colleges.
+- Explore Events.
+- Societies.
+- Contact or support.
+- Privacy Policy.
+- Terms of Use.
+- Data correction/reporting link.
+
+Clearly state that event details and participation policies are managed by the respective organisers.
+
+---
+
+# 6. COLLEGE DASHBOARD
+
+After selecting a college, show a dedicated dashboard.
+
+Example route:
+
+/colleges/:collegeId
+
+Header:
+- College name.
+- Location.
+- Optional verified college logo.
+- Change College action.
+
+Dashboard sections:
+1. Search bar.
+2. Upcoming events.
+3. Live or currently active events.
+4. Recently published events.
+5. Societies in this college.
+6. Recruitment opportunities.
+7. Browse all events.
+8. Browse all societies.
+
+Filters:
+- Event category.
+- Event date.
+- Registration open/closed.
+- Society.
+- Eligibility.
+- Free or paid, where applicable.
+- Online or offline.
+- Upcoming, ongoing, completed.
+
+Sorting:
+- Soonest first.
+- Recently published.
+- Registration closing soon, where an accurate deadline exists.
+
+Every filter must function.
+
+The dashboard must only display data associated with the selected college unless the user explicitly chooses to explore events across other colleges.
+
+Support a "Discover other IPU colleges" option.
+
+---
+
+# 7. SOCIETY DIRECTORY
+
+Create a dedicated society directory for every college.
+
+Example route:
+
+/colleges/:collegeId/societies
+
+The page must:
+- Display society cards in a responsive grid.
+- Provide search by society name.
+- Support category filters.
+- Support sorting by name or recently updated information.
+- Include a clear empty state.
+- Show recruitment availability where verified.
+- Link each card to its society detail page.
+
+Society card fields:
+- Name.
+- College.
+- Category.
+- Logo or placeholder.
+- Short description.
+- Number of published upcoming events, calculated from actual records.
+- Membership recruitment status.
+- View Society button.
+
+Do not hardcode society counts or claim all societies have been listed if the database is incomplete.
+
+## ADGITM demonstration society list
+
+Seed the following names as demonstration directory records for ADGITM, subject to verification:
+
+- IEEE ADGITM.
+- CodeChef ADGITM.
+- Robogyan.
+- Kritrim Dhi.
+- DataZoic.
+- BitYug.
+- SAE-ME.
+- Freak Streets.
+- Swaranjali.
+- Quintessence ADGITM.
+- Word Wizards.
+- The Invincibles.
+- Moot Court Society.
+- Legal Aid Cell.
+
+These records must be marked as unverified demo records until confirmed.
+
+Provide a simple mechanism for administrators to correct names, update categories, add official links, and approve records.
+
+For other colleges, do not invent exhaustive society directories. Show only verified or clearly labelled demonstration records.
+
+---
+
+# 8. SOCIETY DETAIL PAGE
+
+Example route:
+
+/colleges/:collegeId/societies/:societyId
+
+This is one of the most important pages.
+
+Display:
+
+## Society header
+- Society logo.
+- Society name.
+- College name.
+- Category.
+- Short description.
+- Verification status.
+- Official website or social links, if verified.
+- Follow or bookmark button, if authenticated.
+
+## Society tabs or sections
+1. Overview.
+2. Upcoming Events.
+3. Ongoing Events.
+4. Past Events.
+5. Membership.
+6. Contact.
+
+## Events section
+
+Show all events organised by that society.
+
+Each event must have a detail page and must include:
+- Event title.
+- Description.
+- Event poster.
+- Start and end dates.
+- Registration deadline.
+- Venue.
+- Organiser.
+- Category.
+- Entry fee, if applicable.
+- Eligibility.
+- Registration link or internal registration form.
+- Contact/support information.
+- Last-updated timestamp.
+- Publication and verification status.
+
+Show status labels:
+- Upcoming.
+- Ongoing.
+- Completed.
+- Cancelled.
+- Registration Open.
+- Registration Closed.
+- Awaiting Verification.
+
+Compute event status using actual dates and organiser-controlled registration settings.
+
+Do not show an event as verified solely because someone submitted it.
+
+---
+
+# 9. OUTSIDER ELIGIBILITY SYSTEM
+
+Every event must explicitly specify who can participate.
+
+Support these eligibility types:
+- Society Members Only.
+- Organising College Students Only.
+- Selected Colleges Only.
+- All IPU College Students.
+- All College Students.
+- Open to Outsiders.
+- Public Event.
+- Custom Eligibility.
+
+Allow organisers to add a short eligibility explanation.
+
+Examples:
+- "Open to students from all colleges."
+- "Only registered society members can participate."
+- "Open to non-members; external college students may register."
+- "Open to the public. Valid registration required."
+
+IMPORTANT:
+- Do not infer outsider eligibility using AI alone.
+- The event organiser must select and confirm the eligibility.
+- If eligibility is missing, show "Eligibility not confirmed."
+- If the event is restricted, display the restriction clearly before the registration button.
+- Do not imply that a successful online registration guarantees entry to the venue.
+- Where college ID or other verification is required, show the requirement before submission.
+
+---
+
+# 10. EVENT REGISTRATION
+
+Create an event registration experience.
+
+Example route:
+
+/events/:eventId/register
+
+When a user clicks Register:
+1. Check whether registration is open.
+2. Show event eligibility and requirements.
+3. If authentication is required, request login.
+4. Show the correct form for the event.
+5. Validate required fields.
+6. Submit the registration.
+7. Save the registration in Firestore if Firebase is enabled.
+8. Show a confirmation page with registration details.
+9. Prevent duplicate registrations for the same user and event.
+10. Show registration status in the user's dashboard.
+
+Support two registration modes:
+
+A. Internal Registration
+- Form configured by the organiser.
+- Name and email from the user profile where appropriate.
+- Optional phone number, team name, college, course, or other event-specific questions.
+- Clear consent and privacy notice.
+- Server-side or trusted backend validation where required.
+
+B. External Registration
+- Official Google Form or organiser registration URL.
+- Open the correct external URL in a safe manner.
+- Clearly state that registration is handled externally.
+- Never fabricate Google Form URLs.
+
+Registration states:
+- Registered.
+- Pending.
+- Confirmed.
+- Waitlisted.
+- Cancelled.
+- Rejected, if applicable.
+
+Allow organisers to export registration data only if authorised.
+
+Do not collect unnecessary sensitive personal information.
+
+---
+
+# 11. BECOME A MEMBER
+
+Create a prominent homepage CTA:
+
+"Become a Member of a Society"
+
+Example route:
+
+/membership
+
+Student workflow:
+1. Select college.
+2. Browse societies.
+3. Select a society.
+4. Read about the society and its work.
+5. View recruitment status.
+6. View verified contact and application information.
+7. Open the official membership form.
+8. Optionally submit an internal membership enquiry.
+9. View the application status if the application is handled internally.
+
+Membership status:
+- Recruitment Open.
+- Recruitment Upcoming.
+- Recruitment Closed.
+- Not Currently Recruiting.
+- Status Not Confirmed.
+
+Membership page details:
+- Society name and logo.
+- Description.
+- Activities and focus areas.
+- Recruitment requirements.
+- Application deadline, when confirmed.
+- Official Google Form link, when supplied.
+- Official email or public social media link.
+- Verified president/core-team contact information, only with permission.
+- Membership enquiry form.
+
+## Contact details and privacy
+
+Do not invent names, personal phone numbers, or contact details.
+
+Only show contacts that are:
+- Officially published for this purpose, or
+- Supplied and approved by an authorised society representative.
+
+Prefer official society email, website, or social profile links.
+
+If a president or core-team contact is not verified, show:
+
+"Contact details will be available once verified by the society."
+
+Membership application data must only be accessible to the authorised society team and platform administrators with appropriate permissions.
+
+---
+
+# 12. AUTHENTICATION AND USER PROFILES
+
+Implement Firebase Authentication with:
+- Email and password sign-up.
+- Login.
+- Logout.
+- Password reset.
+- Form validation.
+- Clear error messages.
+- Persistent authentication sessions.
+
+Optional:
+- Google sign-in if configured correctly.
+
+User profile fields:
+- User ID.
+- Display name.
+- Email.
+- Selected college.
+- Optional course and year.
+- Interests.
+- Saved events.
+- Saved societies.
+- Created-at timestamp.
+
+Do not ask for a college ID unless a specific verification flow actually requires it.
+
+Profile dashboard:
+- My Registrations.
+- Saved Events.
+- Followed Societies.
+- Membership Applications.
+- Selected College.
+- Edit Profile.
+
+Allow visitors to browse public event information without forcing login. Require login only for actions that genuinely need an account.
+
+---
+
+# 13. SOCIETY ADMIN DASHBOARD
+
+Create a protected dashboard for authorised society representatives.
+
+Example route:
+
+/admin/society
+
+Features:
+- Create event.
+- Edit event.
+- Cancel event.
+- Upload event poster.
+- Update event eligibility.
+- Set registration deadlines.
+- Open or close registration.
+- Choose internal or external registration.
+- Add official registration URL.
+- Publish recruitment details.
+- Add membership form URL.
+- Update approved society contact details.
+- View event registrations.
+- Update registration status.
+- Export authorised registration records.
+- Preview event before publication.
+
+Every event form must validate:
+- Title.
+- Description.
+- Society.
+- College.
+- Start/end date.
+- Registration deadline.
+- Eligibility.
+- Venue or online status.
+- Registration method.
+- Required links and contact information.
+
+Prevent publication of incomplete records.
+
+If critical information is missing, save as draft and explain what is missing.
+
+New societies and unverified event submissions should enter a pending-approval state.
+
+Only authorised society members may manage their own society.
+
+A society admin must not be able to edit another society's events or view its private registration records.
+
+---
+
+# 14. PLATFORM ADMIN DASHBOARD
+
+Create a separate platform-admin interface.
+
+Features:
+- Manage colleges.
+- Manage societies.
+- Approve or reject society submissions.
+- Verify society representatives.
+- Review events.
+- Approve or reject event submissions.
+- Handle reports and corrections.
+- Mark verified official links.
+- Review suspicious or duplicate events.
+- Suspend abusive accounts or content where appropriate.
+- View basic platform metrics derived from actual database data.
+
+Metrics can include:
+- Total registered users.
+- Active colleges.
+- Published societies.
+- Upcoming verified events.
+- Registration counts.
+- Pending approvals.
+
+Do not use hardcoded fake analytics.
+
+Admin routes must be protected by trusted role checks and database permissions, not by hiding buttons in the UI.
+
+---
+
+# 15. SEARCH AND DISCOVERY
+
+Create global search that can find:
+- Colleges.
+- Societies.
+- Events.
+- Categories.
+
+Search must work with:
+- Full college name.
+- College abbreviation.
+- Society name.
+- Event title.
+- Partial words.
+
+Implement filters for:
+- College.
+- Event category.
+- Event date.
+- Eligibility.
+- Registration status.
+- Society.
+- Online/offline format.
+
+Include:
+- Search loading state.
+- No-results state.
+- Clear filters action.
+- Useful suggestions.
+- Mobile-friendly filters.
+
+Optional AI feature:
+
+Add natural-language event discovery, allowing a student to type:
+
+"Show coding events next weekend where students from other colleges are allowed."
+
+The system should interpret the query and filter the existing event dataset.
+
+Do not allow the AI model to invent event results.
+
+AI recommendations must return only event IDs or records from the database. If there are no matching events, explain that no matching event is currently published.
+
+Use AI only where it adds genuine value. The normal search and filters must work even if the AI service is unavailable.
+
+---
+
+# 16. DATABASE DESIGN
+
+Use Cloud Firestore with structured, documented collections.
+
+Suggested collections:
+
+## colleges
+Fields:
+- name
+- abbreviation
+- location
+- officialWebsite
+- logoUrl
+- isActive
+- verificationStatus
+- createdAt
+- updatedAt
+
+## societies
+Fields:
+- name
+- collegeId
+- category
+- description
+- logoUrl
+- officialWebsite
+- officialSocialLinks
+- recruitmentStatus
+- recruitmentDeadline
+- membershipFormUrl
+- publicContactEmail
+- approvedContactDetails
+- verificationStatus
+- publicationStatus
+- adminUserIds
+- createdAt
+- updatedAt
+
+## events
+Fields:
+- title
+- description
+- societyId
+- collegeId
+- category
+- posterUrl
+- startAt
+- endAt
+- registrationDeadline
+- venue
+- isOnline
+- onlineMeetingUrl, if applicable and access-controlled
+- eligibilityType
+- eligibilityDescription
+- registrationMode
+- registrationUrl
+- registrationOpen
+- eventStatus
+- verificationStatus
+- publicationStatus
+- createdBy
+- createdAt
+- updatedAt
+
+## users
+Fields:
+- displayName
+- email
+- selectedCollegeId
+- course
+- year
+- interests
+- role
+- createdAt
+- updatedAt
+
+Role must not be user-editable through ordinary profile updates.
+
+## registrations
+Fields:
+- eventId
+- userId
+- status
+- submittedAnswers
+- submittedAt
+- updatedAt
+
+Use a deterministic or otherwise race-safe strategy to prevent duplicate registrations per user and event.
+
+## membershipApplications
+Fields:
+- societyId
+- collegeId
+- userId
+- answers
+- status
+- submittedAt
+- updatedAt
+
+## savedEvents
+Fields:
+- userId
+- eventId
+- createdAt
+
+## savedSocieties
+Fields:
+- userId
+- societyId
+- createdAt
+
+## reports
+Fields:
+- targetType
+- targetId
+- reason
+- description
+- reportedBy
+- status
+- createdAt
+
+## notifications
+Fields:
+- userId
+- title
+- body
+- type
+- relatedEntityId
+- readAt
+- createdAt
+
+Use server timestamps where appropriate.
+
+Choose sensible document IDs and query patterns. Avoid unbounded collection reads.
+
+Create required Firestore composite indexes and document them.
+
+Do not store passwords in Firestore.
+
+---
+
+# 17. SECURITY RULES AND ACCESS CONTROL
+
+Security is mandatory.
+
+Implement Firestore Security Rules that:
+- Allow public read access only to published, approved college, society, and event records.
+- Restrict private user records to their owners and authorised roles.
+- Restrict registration data to the relevant student and authorised event/society administrators.
+- Restrict membership applications to the applicant and authorised society administrators.
+- Prevent users from assigning themselves privileged roles.
+- Prevent unauthorised changes to verification status.
+- Prevent society admins from modifying societies they do not manage.
+- Validate allowed fields and important data types.
+- Restrict unsafe writes and unauthorised bulk updates.
+
+Use trusted server-side or administrator-controlled processes to assign privileged roles.
+
+Do not trust a role field supplied by the client.
+
+Add appropriate Storage Rules for posters and uploads.
+
+Do not expose API secrets.
+
+Use environment variables and provide a safe `.env.example` with placeholders, never real secrets.
+
+Include instructions for deploying and testing the security rules.
+
+---
+
+# 18. OPTIONAL AI FEATURES
+
+Implement these only after the core website works.
+
+## A. Personalised event recommendations
+Recommend events using the user's selected college, interests, event category, dates, and actual eligibility rules.
+
+## B. Natural-language event search
+Translate user queries into filters against existing database records.
+
+## C. Event description assistant
+Help authorised society representatives rewrite event descriptions, improve clarity, and generate structured event summaries.
+
+The AI must not invent:
+- Dates.
+- Venues.
+- Fees.
+- Registration links.
+- Society contacts.
+- Outsider eligibility.
+- Event verification status.
+
+Every AI-generated description must be reviewed by the organiser before publication.
+
+If the AI API is not configured, show a friendly unavailable state and keep normal functionality working.
+
+---
+
+# 19. IMPORTANT UI COMPONENTS
+
+Build reusable components:
+
+- Navbar.
+- Footer.
+- CollegeSelectorModal.
+- CollegeCard.
+- SocietyCard.
+- EventCard.
+- EventStatusBadge.
+- EligibilityBadge.
+- CategoryFilter.
+- SearchBar.
+- FilterDrawer.
+- EventDetailHeader.
+- RegistrationForm.
+- MembershipApplicationForm.
+- SocietyContactCard.
+- EmptyState.
+- LoadingSkeleton.
+- ErrorState.
+- ConfirmDialog.
+- Toast notifications.
+- ProtectedRoute.
+- AdminLayout.
+- UserProfileMenu.
+
+Use shared design tokens and consistent spacing.
+
+Do not duplicate the same page structure for every college. Use reusable pages driven by college IDs and database records.
+
+---
+
+# 20. REQUIRED ROUTES
+
+Create these routes:
+
+/
+Homepage.
+
+ /colleges
+College discovery.
+
+ /colleges/:collegeId
+Selected college dashboard.
+
+ /colleges/:collegeId/societies
+Society directory.
+
+ /colleges/:collegeId/societies/:societyId
+Society detail page.
+
+ /events
+Global event discovery.
+
+ /events/:eventId
+Event detail page.
+
+ /events/:eventId/register
+Event registration.
+
+ /membership
+Society membership discovery.
+
+ /membership/:societyId
+Society membership detail and application.
+
+ /login
+Login.
+
+ /signup
+Sign up.
+
+ /forgot-password
+Password recovery.
+
+ /profile
+User dashboard.
+
+ /admin/society
+Society admin dashboard.
+
+ /admin/society/events/new
+Create event.
+
+ /admin/society/events/:eventId/edit
+Edit event.
+
+ /admin/platform
+Platform admin dashboard.
+
+ /privacy
+Privacy policy.
+
+ /terms
+Terms of use.
+
+Handle invalid routes with a polished 404 page.
+
+---
+
+# 21. DEMONSTRATION DATA
+
+Create seed data for development.
+
+Include:
+- All 10 supplied college entries.
+- The 14 supplied ADGITM society names.
+- A small number of explicitly fictional demonstration events.
+- A mixture of event categories.
+- Different eligibility types.
+- Different registration states.
+- Membership recruitment examples.
+
+Every fictional event must have an obvious demo label, such as:
+
+"DEMO EVENT — NOT A REAL LISTING"
+
+Do not show invented event data as current real events on the production site.
+
+Do not fabricate actual presidents' names, personal phone numbers, official Google Forms, or society URLs.
+
+Provide a clear process to replace demo data with verified records.
+
+If no verified events are available, display an honest empty state.
+
+---
+
+# 22. PROJECT STRUCTURE AND DOCUMENTATION
+
+Organise the codebase clearly.
+
+Suggested structure:
+
+src/
+  app/
+  components/
+    layout/
+    colleges/
+    societies/
+    events/
+    membership/
+    forms/
+    ui/
+  pages/
+  routes/
+  hooks/
+  services/
+    firebase/
+    colleges/
+    societies/
+    events/
+    registrations/
+  schemas/
+  types/
+  utils/
+  config/
+  styles/
+
+Create:
+- package.json.
+- Vite and TypeScript configuration.
+- Tailwind configuration if needed by the chosen version.
+- Firebase initialization.
+- `.env.example`.
+- Firestore Security Rules.
+- Firestore index definitions.
+- Demo seed script.
+- README.md.
+- Setup and deployment instructions.
+
+Keep the architecture understandable for a college student.
+
+Avoid unnecessary enterprise complexity.
+
+---
+
+# 23. TESTING REQUIREMENTS
+
+Before declaring the application complete, verify the following.
+
+## Homepage
+- Homepage loads.
+- College modal opens and closes.
+- College search works.
+- College selection navigates correctly.
+- Previously selected college is restored appropriately.
+
+## Society discovery
+- Society cards load for the correct college.
+- Search and category filters work.
+- Society detail pages open.
+- Unverified records are clearly labelled.
+
+## Events
+- Event lists and detail pages load.
+- Status labels use actual dates and registration settings.
+- Eligibility is visible before registration.
+- Missing eligibility is labelled as unconfirmed.
+- Expired or cancelled events cannot accept new registrations.
+
+## Registration
+- Form validation works.
+- Duplicate registration is prevented.
+- Confirmation is shown after successful submission.
+- External registration links are correct and clearly identified.
+- Private registration records are not publicly accessible.
+
+## Membership
+- Membership status is displayed.
+- Official form links open correctly.
+- Unverified personal contacts are not displayed.
+- Applications are visible only to authorised users.
+
+## Admin
+- Unauthenticated users cannot access protected operations.
+- Ordinary users cannot become admins by changing their profile.
+- Society admins cannot modify another society's records.
+- Approval and publication states work correctly.
+
+## UI
+- Desktop and mobile layouts work.
+- Navigation links work.
+- Forms have validation messages.
+- Empty, loading, success, and error states exist.
+- No broken images or missing routes.
+- No obvious console errors.
+
+Run available type checks, linting, and tests. Fix errors rather than merely listing them.
+
+If the environment supports browser testing, test the key user journeys in the browser.
+
+Never claim a test passed if it was not actually run.
+
+---
+
+# 24. IMPLEMENTATION ORDER
+
+Build in the following order:
+
+Phase 1:
+- Project setup.
+- Design system.
+- Responsive homepage.
+- College selection modal.
+- College directory.
+
+Phase 2:
+- College dashboard.
+- Society directory.
+- Society detail page.
+- Event discovery and filters.
+
+Phase 3:
+- Event details.
+- Eligibility.
+- Registration flow.
+- Membership pages.
+
+Phase 4:
+- Firebase Authentication.
+- Firestore integration.
+- User profiles.
+- Saved events and societies.
+
+Phase 5:
+- Society admin dashboard.
+- Platform admin dashboard.
+- Approval and verification workflows.
+- Security Rules.
+
+Phase 6:
+- Optional AI features.
+- Testing.
+- Error handling.
+- Performance improvements.
+- Deployment documentation.
+
+Prioritise a complete working core application before advanced AI features.
+
+---
+
+# 25. FINAL ACCEPTANCE CRITERIA
+
+The project is complete only when:
+
+1. The homepage looks polished and works on mobile.
+2. College selection and search work.
+3. The 10 supplied college records exist in the data model.
+4. College dashboards display their associated society and event data.
+5. Society cards navigate to functional detail pages.
+6. Event details show accurate eligibility and registration information.
+7. Registration works through the configured internal or external flow.
+8. Membership information and official form links work.
+9. Authentication and role-based permissions work when Firebase is configured.
+10. Admins can manage records according to their permissions.
+11. Demo data is visibly distinguished from verified real-world data.
+12. Security Rules prevent unauthorised access to private data.
+13. Setup and deployment instructions are documented.
+14. The application has been tested to the extent supported by the environment.
+
+Do not replace required functionality with decorative buttons or non-working mock interactions.
+
+If any integration requires credentials, explain exactly which variables are needed and provide a working demo alternative.
+
+Start by inspecting the current project and its environment. Then implement the application directly. If no project exists, create the complete project from scratch.
+
+The final result should feel like a real, trustworthy campus product: simple, attractive, fast, accessible, and genuinely useful to students across IPU colleges.
